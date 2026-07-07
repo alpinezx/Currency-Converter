@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Holiday Money → Pounds</title>
+<style>
+  /* Palette inspired by İznik tiles: cobalt, turquoise, white, a touch of coral */
+  :root {
+    --cobalt: #1E4B9E;
+    --cobalt-deep: #14336E;
+    --turquoise: #2AA8A0;
+    --coral: #E2604C;
+    --paper: #F7FAFC;
+    --ink: #17233B;
+    --muted: #5C6B85;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(180deg, var(--cobalt-deep) 0%, var(--cobalt) 45%, var(--turquoise) 130%);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100dvh;
+    padding: 18px 14px 28px;
+  }
+  header {
+    width: 100%;
+    max-width: 430px;
+    color: #fff;
+    text-align: center;
+    padding: 8px 0 16px;
+  }
+  header h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: 0.02em; }
+  header p { font-size: 0.9rem; opacity: 0.85; margin-top: 4px; }
+
+  .card {
+    width: 100%;
+    max-width: 430px;
+    background: var(--paper);
+    border-radius: 22px;
+    padding: 22px 18px 20px;
+    box-shadow: 0 12px 30px rgba(10, 25, 60, 0.35);
+  }
+
+  .label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  label.big {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  #currencySelect {
+    border: 2px solid var(--cobalt);
+    background: #fff;
+    color: var(--cobalt);
+    font-size: 1rem;
+    font-weight: 800;
+    border-radius: 10px;
+    padding: 7px 10px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .amount-row {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 3px solid var(--cobalt);
+    border-radius: 16px;
+    padding: 6px 14px;
+  }
+  .amount-row .symbol {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--cobalt);
+    margin-right: 8px;
+  }
+  #amountInput {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--ink);
+    background: transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  #clearBtn {
+    border: none;
+    background: #E8EDF5;
+    color: var(--muted);
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .chips button {
+    flex: 1 1 28%;
+    border: none;
+    background: #E4F2F1;
+    color: var(--turquoise);
+    font-size: 1.05rem;
+    font-weight: 800;
+    padding: 12px 0;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  .chips button:active { background: var(--turquoise); color: #fff; }
+
+  .result {
+    margin-top: 22px;
+    background: var(--cobalt);
+    border-radius: 18px;
+    padding: 20px 16px;
+    text-align: center;
+    color: #fff;
+  }
+  .result .gbp {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    word-break: break-all;
+  }
+  .result .words { margin-top: 6px; font-size: 1.05rem; opacity: 0.9; }
+
+  .rate-line { margin-top: 16px; text-align: center; font-size: 0.9rem; color: var(--muted); }
+  .rate-line strong { color: var(--ink); }
+  .rate-line .status { display: block; margin-top: 2px; font-size: 0.8rem; }
+  .status.live { color: var(--turquoise); font-weight: 700; }
+  .status.offline { color: var(--coral); font-weight: 700; }
+
+  .rate-edit { margin-top: 10px; display: flex; justify-content: center; gap: 8px; align-items: center; }
+  .rate-edit input {
+    width: 110px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 8px;
+    border: 2px solid #D4DCE8;
+    border-radius: 10px;
+    outline: none;
+  }
+  .rate-edit input:focus { border-color: var(--cobalt); }
+  .rate-edit button {
+    border: none;
+    background: #E8EDF5;
+    color: var(--cobalt);
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 9px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  footer {
+    margin-top: 14px;
+    color: rgba(255,255,255,0.75);
+    font-size: 0.78rem;
+    text-align: center;
+    max-width: 430px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🇹🇷 Holiday Money → Pounds 🇬🇧</h1>
+  <p>Type the price — see it in pounds</p>
+</header>
+
+<div class="card">
+  <div class="label-row">
+    <label class="big" for="amountInput">Price in</label>
+    <select id="currencySelect" aria-label="Choose currency">
+      <option value="TRY" selected>₺ Turkish lira</option>
+      <option value="EUR">€ Euros</option>
+    </select>
+  </div>
+
+  <div class="amount-row">
+    <span class="symbol" id="symbol">₺</span>
+    <input id="amountInput" type="text" inputmode="decimal" placeholder="0" autocomplete="off">
+    <button id="clearBtn" type="button">Clear</button>
+  </div>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="result">
+    <div class="gbp" id="gbpOut">£0.00</div>
+    <div class="words" id="wordsOut">0 pounds, 0 pence</div>
+  </div>
+
+  <div class="rate-line">
+    Rate: <strong id="rateShow"></strong> per <span id="rateUnit">lira</span>
+    <span class="status" id="rateStatus"></span>
+  </div>
+
+  <div class="rate-edit">
+    <input id="rateInput" type="text" inputmode="decimal" aria-label="Exchange rate, pounds per unit">
+    <button id="rateApply" type="button">Set rate</button>
+    <button id="rateRefresh" type="button">↻ Update</button>
+  </div>
+</div>
+
+<footer>Tip: the app fetches today's rates automatically when it opens. If there's no internet, it uses the last rate shown — or type in a rate yourself from a board at the exchange office.</footer>
+
+<script>
+  // Fallback rates in GBP per unit (7 July 2026) — replaced by live rates when online
+  var CURRENCIES = {
+    TRY: { symbol: '\u20BA', name: 'lira',  rate: 0.0161, chips: [100, 250, 500, 1000, 2500, 5000], decimals: 4 },
+    EUR: { symbol: '\u20AC', name: 'euro',  rate: 0.85,   chips: [5, 10, 20, 50, 100, 200],         decimals: 4 }
+  };
+  var current = 'TRY';
+
+  var amountInput = document.getElementById('amountInput');
+  var gbpOut = document.getElementById('gbpOut');
+  var wordsOut = document.getElementById('wordsOut');
+  var rateShow = document.getElementById('rateShow');
+  var rateUnit = document.getElementById('rateUnit');
+  var rateStatus = document.getElementById('rateStatus');
+  var rateInput = document.getElementById('rateInput');
+  var symbolEl = document.getElementById('symbol');
+  var chipsEl = document.getElementById('chips');
+  var selectEl = document.getElementById('currencySelect');
+
+  function parseAmount(str) {
+    if (!str) return 0;
+    str = String(str).replace(/,/g, '.').replace(/[^0-9.]/g, '');
+    var n = parseFloat(str);
+    return isNaN(n) || n < 0 ? 0 : n;
+  }
+
+  function convert() {
+    var amt = parseAmount(amountInput.value);
+    var gbp = amt * CURRENCIES[current].rate;
+    var pounds = Math.floor(gbp);
+    var pence = Math.round((gbp - pounds) * 100);
+    if (pence === 100) { pounds += 1; pence = 0; }
+
+    gbpOut.textContent = '\u00A3' + gbp.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    wordsOut.textContent =
+      pounds.toLocaleString('en-GB') + (pounds === 1 ? ' pound, ' : ' pounds, ') +
+      pence + (pence === 1 ? ' penny' : ' pence');
+  }
+
+  function refreshRateDisplay(statusText, statusClass) {
+    var c = CURRENCIES[current];
+    rateShow.textContent = '\u00A3' + c.rate.toFixed(c.decimals);
+    rateUnit.textContent = c.name;
+    rateInput.value = c.rate.toFixed(c.decimals);
+    if (statusText !== undefined) {
+      rateStatus.textContent = statusText;
+      rateStatus.className = 'status ' + (statusClass || '');
+    }
+    convert();
+  }
+
+  function buildChips() {
+    chipsEl.innerHTML = '';
+    var c = CURRENCIES[current];
+    c.chips.forEach(function (amt) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = c.symbol + amt.toLocaleString('en-GB');
+      b.addEventListener('click', function () {
+        amountInput.value = amt;
+        convert();
+      });
+      chipsEl.appendChild(b);
+    });
+  }
+
+  function switchCurrency(code) {
+    current = code;
+    symbolEl.textContent = CURRENCIES[code].symbol;
+    buildChips();
+    refreshRateDisplay();
+  }
+
+  function fetchLiveRates() {
+    rateStatus.textContent = 'Checking today\u2019s rates\u2026';
+    rateStatus.className = 'status';
+    // One request gets everything: rates of TRY and EUR per 1 GBP, then invert
+    fetch('https://open.er-api.com/v6/latest/GBP')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data && data.rates && data.rates.TRY > 0 && data.rates.EUR > 0) {
+          CURRENCIES.TRY.rate = 1 / data.rates.TRY;
+          CURRENCIES.EUR.rate = 1 / data.rates.EUR;
+          refreshRateDisplay('Live rates \u2713 updated just now', 'live');
+        } else {
+          throw new Error('no rates');
+        }
+      })
+      .catch(function () {
+        refreshRateDisplay('Couldn\u2019t get live rates \u2014 using the rate shown', 'offline');
+      });
+  }
+
+  amountInput.addEventListener('input', convert);
+
+  document.getElementById('clearBtn').addEventListener('click', function () {
+    amountInput.value = '';
+    convert();
+    amountInput.focus();
+  });
+
+  selectEl.addEventListener('change', function () {
+    switchCurrency(selectEl.value);
+  });
+
+  document.getElementById('rateApply').addEventListener('click', function () {
+    var r = parseAmount(rateInput.value);
+    if (r > 0 && r < 5) {
+      CURRENCIES[current].rate = r;
+      refreshRateDisplay('Using your rate', '');
+    } else {
+      rateStatus.textContent = 'That rate doesn\u2019t look right \u2014 pounds per ' + CURRENCIES[current].name + ' should be a small number';
+      rateStatus.className = 'status offline';
+    }
+  });
+
+  document.getElementById('rateRefresh').addEventListener('click', fetchLiveRates);
+
+  switchCurrency('TRY');
+  fetchLiveRates();
+</script>
+
+</body>
+</html>
