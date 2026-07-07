@@ -3,86 +3,176 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" id="metaTheme" content="#14336E">
 <title>Holiday Money → Pounds</title>
+
+<!-- App icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- Friendly rounded typeface, falls back to system fonts if offline -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
-  /* Palette inspired by İznik tiles: cobalt, turquoise, white, a touch of coral */
+  /* Palette inspired by İznik tiles: cobalt, turquoise, white, gold, coral */
   :root {
     --cobalt: #1E4B9E;
     --cobalt-deep: #14336E;
     --turquoise: #2AA8A0;
+    --turquoise-soft: #E2F3F2;
+    --gold: #FFD65A;
     --coral: #E2604C;
-    --paper: #F7FAFC;
+    --paper: #FBFDFF;
     --ink: #17233B;
     --muted: #5C6B85;
+    --line: #DDE6F2;
+    --field: #ffffff;
+    --btn-soft: #EEF2F8;
+    --btn-soft-active: #DFE6F0;
+    --btn-soft-text: #5C6B85;
+    --accent-text: #1E4B9E;
+    --chip-text: #157A74;
+    --live: #157A74;
+    --offline: #E2604C;
+    --bg:
+      radial-gradient(120% 90% at 50% -10%, rgba(255,255,255,0.14), rgba(255,255,255,0) 55%),
+      linear-gradient(180deg, #14336E 0%, #1E4B9E 45%, #2AA8A0 135%);
+    --card-shadow:
+      0 1px 0 rgba(255,255,255,0.55) inset,
+      0 18px 45px rgba(8, 22, 55, 0.42),
+      0 4px 12px rgba(8, 22, 55, 0.25);
+    --focus-ring: rgba(30, 75, 158, 0.12);
+    --focus-border: #1E4B9E;
   }
+  :root[data-theme="dark"] {
+    --paper: #161F36;
+    --ink: #E8EEF8;
+    --muted: #9AA8C2;
+    --line: #2C3D60;
+    --turquoise-soft: #10312E;
+    --field: #0F1930;
+    --btn-soft: #223252;
+    --btn-soft-active: #2B3E64;
+    --btn-soft-text: #B9C6DF;
+    --accent-text: #8FB2F5;
+    --chip-text: #6FD3CC;
+    --live: #5BC8C0;
+    --offline: #F2836F;
+    --bg:
+      radial-gradient(120% 90% at 50% -10%, rgba(120,160,255,0.10), rgba(0,0,0,0) 55%),
+      linear-gradient(180deg, #0B1530 0%, #12244A 50%, #0E3835 135%);
+    --card-shadow:
+      0 1px 0 rgba(255,255,255,0.06) inset,
+      0 18px 45px rgba(0, 0, 0, 0.55),
+      0 4px 12px rgba(0, 0, 0, 0.4);
+    --focus-ring: rgba(78, 127, 217, 0.18);
+    --focus-border: #4E7FD9;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; }
   body {
-    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: linear-gradient(180deg, var(--cobalt-deep) 0%, var(--cobalt) 45%, var(--turquoise) 130%);
+    font-family: "Nunito", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    background-attachment: fixed;
     color: var(--ink);
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100dvh;
-    padding: 18px 14px 28px;
+    padding: 20px 14px 30px;
   }
+
   header {
     width: 100%;
     max-width: 430px;
     color: #fff;
     text-align: center;
-    padding: 8px 0 16px;
+    padding: 6px 0 14px;
+    position: relative;
   }
-  header h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: 0.02em; }
-  header p { font-size: 0.9rem; opacity: 0.85; margin-top: 4px; }
+  header h1 {
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  }
+  header p { font-size: 0.92rem; opacity: 0.85; margin-top: 4px; font-weight: 500; }
+
+  #themeToggle {
+    font-family: inherit;
+    margin-top: 10px;
+    border: 2px solid rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  #themeToggle:active { background: rgba(255,255,255,0.24); }
+  #themeToggle:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
 
   .card {
     width: 100%;
     max-width: 430px;
     background: var(--paper);
-    border-radius: 22px;
-    padding: 22px 18px 20px;
-    box-shadow: 0 12px 30px rgba(10, 25, 60, 0.35);
+    border-radius: 26px;
+    padding: 24px 20px 22px;
+    box-shadow: var(--card-shadow);
+    transition: background 0.25s ease;
   }
 
   .label-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
   label.big {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.09em;
   }
   #currencySelect {
-    border: 2px solid var(--cobalt);
-    background: #fff;
-    color: var(--cobalt);
+    font-family: inherit;
+    border: 2px solid var(--line);
+    background: var(--field);
+    color: var(--accent-text);
     font-size: 1rem;
-    font-weight: 800;
-    border-radius: 10px;
-    padding: 7px 10px;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 8px 10px;
     outline: none;
     cursor: pointer;
+    transition: border-color 0.15s ease;
   }
+  #currencySelect:focus-visible { border-color: var(--focus-border); }
 
   .amount-row {
     display: flex;
     align-items: center;
-    background: #fff;
-    border: 3px solid var(--cobalt);
-    border-radius: 16px;
-    padding: 6px 14px;
+    background: var(--field);
+    border: 2px solid var(--line);
+    border-radius: 18px;
+    padding: 8px 14px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.25s ease;
+  }
+  .amount-row:focus-within {
+    border-color: var(--focus-border);
+    box-shadow: 0 0 0 4px var(--focus-ring);
   }
   .amount-row .symbol {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--cobalt);
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--accent-text);
     margin-right: 8px;
   }
   #amountInput {
@@ -90,97 +180,187 @@
     min-width: 0;
     border: none;
     outline: none;
+    font-family: inherit;
     font-size: 2.4rem;
-    font-weight: 800;
+    font-weight: 600;
     color: var(--ink);
     background: transparent;
     font-variant-numeric: tabular-nums;
   }
   #clearBtn {
+    font-family: inherit;
     border: none;
-    background: #E8EDF5;
-    color: var(--muted);
-    font-size: 1rem;
-    font-weight: 700;
-    border-radius: 10px;
-    padding: 8px 12px;
+    background: var(--btn-soft);
+    color: var(--btn-soft-text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 11px;
+    padding: 9px 13px;
     cursor: pointer;
+    transition: background 0.15s ease;
   }
+  #clearBtn:active { background: var(--btn-soft-active); }
 
-  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .chips { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 14px; }
   .chips button {
+    font-family: inherit;
     flex: 1 1 28%;
     border: none;
-    background: #E4F2F1;
-    color: var(--turquoise);
+    background: var(--turquoise-soft);
+    color: var(--chip-text);
     font-size: 1.05rem;
-    font-weight: 800;
-    padding: 12px 0;
-    border-radius: 12px;
+    font-weight: 600;
+    padding: 13px 0;
+    border-radius: 13px;
     cursor: pointer;
+    transition: transform 0.08s ease, background 0.12s ease, color 0.12s ease;
   }
-  .chips button:active { background: var(--turquoise); color: #fff; }
+  .chips button:active {
+    background: var(--turquoise);
+    color: #fff;
+    transform: scale(0.96);
+  }
+  .chips button:focus-visible { outline: 3px solid var(--focus-border); outline-offset: 2px; }
 
   .result {
     margin-top: 22px;
-    background: var(--cobalt);
-    border-radius: 18px;
-    padding: 20px 16px;
+    background: linear-gradient(135deg, #14336E 0%, #1E4B9E 55%, #2B6BB8 100%);
+    border-radius: 20px;
+    padding: 22px 16px;
     text-align: center;
     color: #fff;
+    box-shadow: 0 10px 24px rgba(20, 51, 110, 0.35);
+    position: relative;
+    overflow: hidden;
+  }
+  .result::after {
+    content: "";
+    position: absolute;
+    top: -55%; left: -25%;
+    width: 150%; height: 90%;
+    background: radial-gradient(closest-side, rgba(255,255,255,0.16), rgba(255,255,255,0));
+    pointer-events: none;
   }
   .result .gbp {
-    font-size: 3rem;
-    font-weight: 800;
+    font-size: 3.1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     line-height: 1.1;
     font-variant-numeric: tabular-nums;
     word-break: break-all;
+    position: relative;
   }
-  .result .words { margin-top: 6px; font-size: 1.05rem; opacity: 0.9; }
+  .result .words {
+    margin-top: 6px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    opacity: 0.92;
+    position: relative;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .result .gbp.pop { animation: pop 0.22s ease; }
+    @keyframes pop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.045); }
+      100% { transform: scale(1); }
+    }
+  }
 
-  .rate-line { margin-top: 16px; text-align: center; font-size: 0.9rem; color: var(--muted); }
-  .rate-line strong { color: var(--ink); }
-  .rate-line .status { display: block; margin-top: 2px; font-size: 0.8rem; }
-  .status.live { color: var(--turquoise); font-weight: 700; }
-  .status.offline { color: var(--coral); font-weight: 700; }
+  .rate-line { margin-top: 18px; text-align: center; font-size: 0.92rem; color: var(--muted); font-weight: 500; }
+  .rate-line strong { color: var(--ink); font-weight: 700; }
+  .rate-line .status { display: block; margin-top: 3px; font-size: 0.82rem; }
+  .status.live { color: var(--live); font-weight: 600; }
+  .status.offline { color: var(--offline); font-weight: 600; }
 
-  .rate-edit { margin-top: 10px; display: flex; justify-content: center; gap: 8px; align-items: center; }
+  .rate-edit { margin-top: 12px; display: flex; justify-content: center; gap: 8px; align-items: center; }
   .rate-edit input {
+    font-family: inherit;
     width: 110px;
     text-align: center;
     font-size: 1rem;
-    font-weight: 700;
-    padding: 8px;
-    border: 2px solid #D4DCE8;
-    border-radius: 10px;
+    font-weight: 600;
+    padding: 9px;
+    border: 2px solid var(--line);
+    border-radius: 11px;
     outline: none;
+    background: var(--field);
+    color: var(--ink);
+    transition: border-color 0.15s ease;
   }
-  .rate-edit input:focus { border-color: var(--cobalt); }
+  .rate-edit input:focus-visible { border-color: var(--focus-border); }
   .rate-edit button {
+    font-family: inherit;
     border: none;
-    background: #E8EDF5;
-    color: var(--cobalt);
-    font-weight: 700;
+    background: var(--btn-soft);
+    color: var(--accent-text);
+    font-weight: 600;
     font-size: 0.9rem;
-    padding: 9px 12px;
-    border-radius: 10px;
+    padding: 10px 13px;
+    border-radius: 11px;
     cursor: pointer;
+    transition: background 0.15s ease;
   }
+  .rate-edit button:active { background: var(--btn-soft-active); }
+
+  /* Cheat sheet: always-visible quick reference */
+  .cheat {
+    margin-top: 20px;
+    border-top: 2px dashed var(--line);
+    padding-top: 14px;
+  }
+  .cheat-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .cheat-grid .cell {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    background: var(--btn-soft);
+    border-radius: 11px;
+    padding: 10px 13px;
+    font-size: 0.98rem;
+  }
+  .cheat-grid .cell .from { font-weight: 600; color: var(--muted); }
+  .cheat-grid .cell .to { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
 
   footer {
-    margin-top: 14px;
-    color: rgba(255,255,255,0.75);
+    margin-top: 16px;
+    color: rgba(255,255,255,0.8);
     font-size: 0.78rem;
+    font-weight: 500;
     text-align: center;
     max-width: 430px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.2);
   }
 </style>
+
+<script>
+  /* Apply the saved theme before first paint to avoid a flash */
+  (function () {
+    var pref = 'auto';
+    try { pref = localStorage.getItem('theme') || 'auto'; } catch (e) {}
+    var dark = pref === 'dark' || (pref === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  })();
+</script>
 </head>
 <body>
 
 <header>
   <h1>🇹🇷 Holiday Money → Pounds 🇬🇧</h1>
   <p>Type the price — see it in pounds</p>
+  <button id="themeToggle" type="button" aria-label="Switch between automatic, light and dark mode"></button>
 </header>
 
 <div class="card">
@@ -215,6 +395,11 @@
     <button id="rateApply" type="button">Set rate</button>
     <button id="rateRefresh" type="button">↻ Update</button>
   </div>
+
+  <div class="cheat">
+    <div class="cheat-title">Quick reference</div>
+    <div class="cheat-grid" id="cheatGrid"></div>
+  </div>
 </div>
 
 <footer>Tip: the app fetches today's rates automatically when it opens. If there's no internet, it uses the last rate shown — or type in a rate yourself from a board at the exchange office.</footer>
@@ -222,8 +407,8 @@
 <script>
   // Fallback rates in GBP per unit (7 July 2026) — replaced by live rates when online
   var CURRENCIES = {
-    TRY: { symbol: '\u20BA', name: 'lira',  rate: 0.0161, chips: [100, 250, 500, 1000, 2500, 5000], decimals: 4 },
-    EUR: { symbol: '\u20AC', name: 'euro',  rate: 0.85,   chips: [5, 10, 20, 50, 100, 200],         decimals: 4 }
+    TRY: { symbol: '\u20BA', name: 'lira', rate: 0.0161, chips: [100, 250, 500, 1000, 2500, 5000], cheat: [50, 100, 250, 500, 1000, 5000] },
+    EUR: { symbol: '\u20AC', name: 'euro', rate: 0.85,   chips: [5, 10, 20, 50, 100, 200],         cheat: [5, 10, 20, 50, 100, 200] }
   };
   var current = 'TRY';
 
@@ -237,12 +422,48 @@
   var symbolEl = document.getElementById('symbol');
   var chipsEl = document.getElementById('chips');
   var selectEl = document.getElementById('currencySelect');
+  var cheatGrid = document.getElementById('cheatGrid');
 
+  /* ---------- Theme: Auto → Light → Dark, saved on the phone ---------- */
+  var themeToggle = document.getElementById('themeToggle');
+  var metaTheme = document.getElementById('metaTheme');
+  var systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+  var themePref = 'auto';
+  try { themePref = localStorage.getItem('theme') || 'auto'; } catch (e) {}
+
+  function applyTheme() {
+    var dark = themePref === 'dark' || (themePref === 'auto' && systemDark.matches);
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    metaTheme.setAttribute('content', dark ? '#0B1530' : '#14336E');
+    themeToggle.textContent =
+      themePref === 'auto' ? '\uD83C\uDF13 Auto' :
+      themePref === 'dark' ? '\uD83C\uDF19 Dark' : '\u2600\uFE0F Light';
+  }
+  themeToggle.addEventListener('click', function () {
+    themePref = themePref === 'auto' ? 'light' : themePref === 'light' ? 'dark' : 'auto';
+    try { localStorage.setItem('theme', themePref); } catch (e) {}
+    applyTheme();
+  });
+  if (systemDark.addEventListener) {
+    systemDark.addEventListener('change', function () { if (themePref === 'auto') applyTheme(); });
+  }
+  applyTheme();
+
+  /* ---------- Conversion ---------- */
   function parseAmount(str) {
     if (!str) return 0;
     str = String(str).replace(/,/g, '.').replace(/[^0-9.]/g, '');
     var n = parseFloat(str);
     return isNaN(n) || n < 0 ? 0 : n;
+  }
+
+  function timeNow() {
+    var d = new Date();
+    return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+  }
+
+  function toGBPString(amount) {
+    return '\u00A3' + amount.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   function convert() {
@@ -252,21 +473,46 @@
     var pence = Math.round((gbp - pounds) * 100);
     if (pence === 100) { pounds += 1; pence = 0; }
 
-    gbpOut.textContent = '\u00A3' + gbp.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    var newText = toGBPString(gbp);
+    if (gbpOut.textContent !== newText) {
+      gbpOut.textContent = newText;
+      gbpOut.classList.remove('pop');
+      void gbpOut.offsetWidth; /* restart animation */
+      gbpOut.classList.add('pop');
+    }
     wordsOut.textContent =
       pounds.toLocaleString('en-GB') + (pounds === 1 ? ' pound, ' : ' pounds, ') +
       pence + (pence === 1 ? ' penny' : ' pence');
   }
 
+  function buildCheatSheet() {
+    cheatGrid.innerHTML = '';
+    var c = CURRENCIES[current];
+    c.cheat.forEach(function (amt) {
+      var cell = document.createElement('div');
+      cell.className = 'cell';
+      var from = document.createElement('span');
+      from.className = 'from';
+      from.textContent = c.symbol + amt.toLocaleString('en-GB');
+      var to = document.createElement('span');
+      to.className = 'to';
+      to.textContent = toGBPString(amt * c.rate);
+      cell.appendChild(from);
+      cell.appendChild(to);
+      cheatGrid.appendChild(cell);
+    });
+  }
+
   function refreshRateDisplay(statusText, statusClass) {
     var c = CURRENCIES[current];
-    rateShow.textContent = '\u00A3' + c.rate.toFixed(c.decimals);
+    rateShow.textContent = '\u00A3' + c.rate.toFixed(4);
     rateUnit.textContent = c.name;
-    rateInput.value = c.rate.toFixed(c.decimals);
+    rateInput.value = c.rate.toFixed(4);
     if (statusText !== undefined) {
       rateStatus.textContent = statusText;
       rateStatus.className = 'status ' + (statusClass || '');
     }
+    buildCheatSheet();
     convert();
   }
 
@@ -295,14 +541,13 @@
   function fetchLiveRates() {
     rateStatus.textContent = 'Checking today\u2019s rates\u2026';
     rateStatus.className = 'status';
-    // One request gets everything: rates of TRY and EUR per 1 GBP, then invert
     fetch('https://open.er-api.com/v6/latest/GBP')
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (data && data.rates && data.rates.TRY > 0 && data.rates.EUR > 0) {
           CURRENCIES.TRY.rate = 1 / data.rates.TRY;
           CURRENCIES.EUR.rate = 1 / data.rates.EUR;
-          refreshRateDisplay('Live rates \u2713 updated just now', 'live');
+          refreshRateDisplay('Live rates \u2713 updated at ' + timeNow(), 'live');
         } else {
           throw new Error('no rates');
         }
@@ -328,7 +573,7 @@
     var r = parseAmount(rateInput.value);
     if (r > 0 && r < 5) {
       CURRENCIES[current].rate = r;
-      refreshRateDisplay('Using your rate', '');
+      refreshRateDisplay('Using your rate (set at ' + timeNow() + ')', '');
     } else {
       rateStatus.textContent = 'That rate doesn\u2019t look right \u2014 pounds per ' + CURRENCIES[current].name + ' should be a small number';
       rateStatus.className = 'status offline';
