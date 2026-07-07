@@ -2,7 +2,7 @@
 
 A simple, phone-friendly currency converter for holidays. Type a price in Turkish lira or euros and instantly see it in British pounds and pence.
 
-**Use it here:** https://YOURUSERNAME.github.io/holiday-money/
+**Use it here:** https://alpinezx.github.io/Currency-Converter/
 
 ## Features
 
